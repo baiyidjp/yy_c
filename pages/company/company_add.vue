@@ -40,7 +40,7 @@
 				<view class="show-pop-title">
 					请选择大额返佣时间(单选)
 				</view>
-				<u-radio-group v-model="currentRebateType">
+				<u-radio-group :wrap="true" v-model="currentRebateType">
 					<u-radio v-for="(rebateDate, index) in rebateInfoList" :key="index" :name="rebateDate.type" @change="onChangeRebateDate">{{rebateDate.date}}</u-radio>
 				</u-radio-group>
 			</view>
@@ -50,7 +50,7 @@
 				<view class="show-pop-title">
 					请选择小额返佣时间(单选)
 				</view>
-				<u-radio-group v-model="currentRebateSmallType">
+				<u-radio-group :wrap="true" v-model="currentRebateSmallType">
 					<u-radio v-for="(rebateDate, index) in rebateInfoList" :key="index" :name="rebateDate.type" @change="onChangeRebateDateSmall">{{rebateDate.date}}</u-radio>
 				</u-radio-group>
 			</view>

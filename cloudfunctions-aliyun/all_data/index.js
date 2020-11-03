@@ -19,11 +19,11 @@ exports.main = async (event, context) => {
 		openid: event.openid
 	}).orderBy('createAt', 'desc').get()
 	
-	let rebateInfoList = await db.collection('rebate_date').get()
+	let rebateInfoList = await db.collection('rebate_date').orderBy('sort', 'asc').get()
 	
-	let contractStatusList = await db.collection('contract_status').get()
+	let contractStatusList = await db.collection('contract_status').orderBy('sort', 'asc').get()
 	
-	let invoiceStatusList = await db.collection('invoice_status').get()
+	let invoiceStatusList = await db.collection('invoice_status').orderBy('sort', 'asc').get()
 	
 	//返回数据给客户端
 	return {

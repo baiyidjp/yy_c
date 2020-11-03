@@ -1,14 +1,14 @@
 <template>
 	<view class="wrap">
 		<u-form class="form-wrap" :model="issue" ref="issueForm" label-width="auto">
-			<u-form-item label="工单客户:" prop="clientId">
+			<u-form-item label="业务单客户:" prop="clientId">
 				<u-input type="select" :value="checkedClient.clientName" placeholder="请选择客户" @click="onClickClientList" />
 			</u-form-item>
 			<u-form-item label="税源地:" prop="companyId">
 				<u-input type="select" :value="checkedCompanyName" placeholder="请选择税源地" @click="onClickCompanyList" />
 			</u-form-item>
 			<u-form-item v-if="checkedCompany" label="服务费类型:">
-				<u-radio-group v-model="issue.companyServiceCharge" @change="onChangeCompanyServiceCharge">
+				<u-radio-group :wrap="true" v-model="issue.companyServiceCharge" @change="onChangeCompanyServiceCharge">
 					<u-radio :name="checkedCompany.serviceCharge">大额({{ checkedCompany.serviceCharge || 0 }}%)</u-radio>
 					<u-radio :name="checkedCompany.serviceChargeSmall">小额({{ checkedCompany.serviceChargeSmall || 0 }}%)</u-radio>
 				</u-radio-group>
@@ -316,7 +316,12 @@
 					let dateString = rebateDate.date
 					const type = rebateDate.type
 					const currentDate = new Date()
-					// type 0-当天 1-下周二 2-次月25号
+					// type 
+					// 0-当天 
+					// 1-下周二 
+					// 2-次月25号 
+					// 3-次月15号 
+					// 4-次次月25号
 					if (type === 0) {
 						dateString = this.$util.timeFormat(currentDate.getTime())
 					}
@@ -339,6 +344,28 @@
 							year += 1
 						}
 						// 设置下一个月25号的日期
+						currentDate.setFullYear(year, month, 25)
+						dateString = this.$util.timeFormat(currentDate.getTime())
+					}
+					if (type === 3) {
+						let year = currentDate.getFullYear()
+						let month = currentDate.getMonth() + 1
+						if (month > 11) {
+							month = 0
+							year += 1
+						}
+						// 设置下一个月15号的日期
+						currentDate.setFullYear(year, month, 15)
+						dateString = this.$util.timeFormat(currentDate.getTime())
+					}
+					if (type === 4) {
+						let year = currentDate.getFullYear()
+						let month = currentDate.getMonth() + 2
+						if (month > 11) {
+							month = 0
+							year += 1
+						}
+						// 设置下下一个月25号的日期
 						currentDate.setFullYear(year, month, 25)
 						dateString = this.$util.timeFormat(currentDate.getTime())
 					}
@@ -363,7 +390,12 @@
 					let dateString = rebateDate.date
 					const type = rebateDate.type
 					const currentDate = new Date()
-					// type 0-当天 1-下周二 2-次月25号
+					// type
+					// 0-当天 
+					// 1-下周二 
+					// 2-次月25号 
+					// 3-次月15号 
+					// 4-次次月25号
 					if (type === 0) {
 						dateString = this.$util.timeFormat(currentDate.getTime())
 					}
@@ -389,6 +421,28 @@
 						currentDate.setFullYear(year, month, 25)
 						dateString = this.$util.timeFormat(currentDate.getTime())
 					}
+					if (type === 3) {
+						let year = currentDate.getFullYear()
+						let month = currentDate.getMonth() + 1
+						if (month > 11) {
+							month = 0
+							year += 1
+						}
+						// 设置下一个月15号的日期
+						currentDate.setFullYear(year, month, 15)
+						dateString = this.$util.timeFormat(currentDate.getTime())
+					}
+					if (type === 4) {
+						let year = currentDate.getFullYear()
+						let month = currentDate.getMonth() + 2
+						if (month > 11) {
+							month = 0
+							year += 1
+						}
+						// 设置下下一个月25号的日期
+						currentDate.setFullYear(year, month, 25)
+						dateString = this.$util.timeFormat(currentDate.getTime())
+					}
 					const dateStringArray = dateString.split('-')
 					const rebateInfo = {
 						date: dateString,
@@ -410,7 +464,7 @@
 			},
 			// 选了发票状态
 			onChangeInvoiceStatus(id) {
-				this.issue.invoiceStatusId= id
+				this.issue.invoiceStatusId = id
 				this.checkedInvoiceStatus = this.invoiceStatusList.find(invoiceStatus => invoiceStatus._id === id)
 				this.showInvoicePop = false
 			},

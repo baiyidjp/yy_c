@@ -91,6 +91,7 @@
 				rebateInfo.isFinish = !rebateInfo.isFinish
 				self.issue.updateAt = Date.now()
 				self.issue.updateBy = self.issue.openid
+				uni.showLoading()
 				uniCloud.callFunction({
 					name: 'issue',
 					data: {
@@ -98,7 +99,7 @@
 						issue: self.issue
 					}
 				}).then(res => {
-					
+					uni.hideLoading()
 				})
 			}
 		},

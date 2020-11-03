@@ -14,7 +14,7 @@
 	</block>
 	<block v-else>
 		<view class="wrap no-data-wrap">
-			<text>当前账号没有添加工单</text>
+			<text>当前账号没有添加业务单</text>
 			<u-button type="primary" @click="onClickAddButton">添加</u-button>
 		</view>
 	</block>

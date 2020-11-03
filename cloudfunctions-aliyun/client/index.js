@@ -32,6 +32,7 @@ exports.main = async (event, context) => {
 			contactInformation: client.contactInformation,
 			invoiceInfo: client.invoiceInfo,
 			signupTime: client.signupTime,
+			contractStatusId: client.contractStatusId,
 			mark: client.mark,
 			createAt: client.createAt,
 			createBy: client.createBy,

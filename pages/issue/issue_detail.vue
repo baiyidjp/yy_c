@@ -15,7 +15,23 @@
 			</view>
 			<u-button class="flag-button" @click="onClickFlagButton(rebateInfo)" :type="rebateInfo.isFinish ? 'error' : 'success'">{{ rebateInfo.isFinish ? '标记为未完成' : '标记为已完成' }}</u-button>
 		</view>
+		<view class="invoice-wrap">
+			<text class="sub-title">发票状态: {{ issueInvoiceStatus }}</text>
+			<u-button type="warning" @click="onClickInvoiceList">改变发票状态</u-button>
+		</view>
 		<text class="sub-title">备注: {{ issue.mark.length > 0 ? issue.mark : '无' }}</text>
+		<u-popup v-model="showInvoicePop" mode="center" border-radius="10" width="95%" :closeable="true">
+			<view class="show-pop">
+				<view class="show-pop-title">
+					请选择发票状态(单选)
+				</view>
+				<u-radio-group :wrap="true" v-model="issue.invoiceStatusId">
+					<u-radio v-for="(invoice, index) in showInvoiceStatusList" :key="index" :name="invoice._id" @change="onChangeInvoiceStatus">
+						{{invoice.status}}
+					</u-radio>
+				</u-radio-group>
+			</view>
+		</u-popup>
 	</view>
 </template>
 
@@ -26,16 +42,27 @@
 	export default {
 		data() {
 			return {
-				issue: null
+				issue: null,
+				showInvoicePop: false,
+				showInvoiceStatusList: []
 			}
 		},
 		onLoad(option) {
 			if (option._id) {
 				this.issue = this.issueList.find(issue => issue._id === option._id)
 			}
+			if (this.invoiceStatusList.length > 0) {
+				this.showInvoiceStatusList = this.invoiceStatusList.map(invoiceStatus => {
+					return {
+						_id: invoiceStatus._id,
+						status: invoiceStatus.status,
+						checked: false
+					}
+				})
+			}
 		},
 		computed: {
-			...mapGetters(['issueList', 'clientList', 'companyList']),
+			...mapGetters(['issueList', 'clientList', 'companyList', 'invoiceStatusList']),
 			issueFinish() {
 				if (this.issue) {
 					let isFinish = true
@@ -57,12 +84,43 @@
 				if (this.issue) {
 					return	this.companyList.find(company => company._id === this.issue.companyId)
 				}
+			},
+			issueInvoiceStatus() {
+				if (this.issue) {
+					const invoiceStatusInfo = this.invoiceStatusList.find(invoiceStatus => invoiceStatus._id === this.issue.invoiceStatusId)
+					if (invoiceStatusInfo) {
+						return invoiceStatusInfo.status
+					}
+					return '无/被删除'
+				}
+				return ''
 			}
 		},
 		methods: {
 			onClickFlagButton(rebateInfo) {
 				const self = this
 				rebateInfo.isFinish = !rebateInfo.isFinish
+				self.issue.updateAt = Date.now()
+				self.issue.updateBy = self.issue.openid
+				uniCloud.callFunction({
+					name: 'issue',
+					data: {
+						type: 'update',
+						issue: self.issue
+					}
+				}).then(res => {
+					
+				})
+			},
+			// 弹出选择发票状态
+			onClickInvoiceList() {
+				this.showInvoicePop = true
+			},
+			// 选了发票状态
+			onChangeInvoiceStatus(id) {
+				const self = this
+				self.issue.invoiceStatusId= id
+				self.showInvoicePop = false
 				self.issue.updateAt = Date.now()
 				self.issue.updateBy = self.issue.openid
 				uniCloud.callFunction({
@@ -131,6 +189,27 @@
 	.rebate-wrap-info {
 		display: flex;
 		flex-direction: column;
+	}
+	.invoice-wrap {
+		margin-top: 5px;
+		padding: 5px 0;
+		border-bottom: 1px solid $u-border-color;
+		border-top: 1px solid $u-border-color;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+	.show-pop {
+		padding: 20px;
+		display: flex;
+		flex-direction: column;
+	}
+	
+	.show-pop-title {
+		font-size: 14px;
+		font-weight: bold;
+		text-align: center;
+		margin-bottom: 20px;
 	}
 	
 </style>

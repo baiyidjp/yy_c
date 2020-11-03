@@ -17,6 +17,7 @@
 		<text class="sub-title">银行卡号: {{ client.invoiceInfo.bankNumber}}</text>
 		<text class="sub-title">邮寄地址: {{ client.invoiceInfo.postAddress}}</text>
 		<text class="sub-title">签约时间: {{ client.signupTime}}</text>
+		<text class="sub-title">合同状态: {{ clientContractStatus}}</text>
 		<text class="sub-title">备注: {{ client.mark.length > 0 ? client.mark : '无' }}</text>
 	</view>
 </template>
@@ -37,7 +38,7 @@
 			}
 		},
 		computed: {
-			...mapGetters(['clientList', 'companyList']),
+			...mapGetters(['clientList', 'companyList', 'contractStatusList']),
 			client() {
 				const findClient = this.clientList.find(client => client._id === this.clientId)
 				if (findClient) {
@@ -50,6 +51,16 @@
 					const companyListInfo = this.companyList.filter(company => this.client.companyIds.includes(company._id))
 					const names = companyListInfo.map(company => company.companyName)
 					return names.toString()
+				}
+				return ''
+			},
+			clientContractStatus() {
+				if (this.client) {
+					const contractStatusInfo = this.contractStatusList.find(contractStatus => contractStatus._id === this.client.contractStatusId)
+					if (contractStatusInfo) {
+						return contractStatusInfo.status
+					}
+					return '无/被删除'
 				}
 				return ''
 			}

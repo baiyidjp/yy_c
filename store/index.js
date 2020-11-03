@@ -9,24 +9,18 @@ const store = new Vuex.Store({
 		companyList: null,
 		clientList: null,
 		issueList: null,
-		rebateInfoList: null
+		rebateInfoList: null,
+		contractStatusList: null,
+		invoiceStatusList: null
 	},
 	getters: {
-		currentUser: state => {
-			return state.currentUser
-		},
-		companyList: state => {
-			return state.companyList
-		},
-		clientList: state => {
-			return state.clientList
-		},
-		issueList: state => {
-			return state.issueList
-		},
-		rebateInfoList: state => {
-			return state.rebateInfoList
-		}
+		currentUser: state => state.currentUser,
+		companyList: state => state.companyList,
+		clientList: state => state.clientList,
+		issueList: state => state.issueList,
+		rebateInfoList: state => state.rebateInfoList,
+		contractStatusList: state => state.contractStatusList,
+		invoiceStatusList: state => state.invoiceStatusList
 	},
 	mutations: {
 		UPDATECURRENTUSER (state, payload) {
@@ -81,6 +75,13 @@ const store = new Vuex.Store({
 		UPDATEREBATEINFOLIST (state, payload) {
 			state.rebateInfoList = payload.rebateInfoList
 		},
+		// contract list
+		UPDATECONTRACTSTATUS (state, payload) {
+			state.contractStatusList = payload.contractStatusList
+		},
+		UPDATEINVOICESTATUS (state, payload) {
+			state.invoiceStatusList = payload.invoiceStatusList
+		}
 	},
 	actions: {
 	}

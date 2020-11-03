@@ -19,6 +19,9 @@
 			<u-form-item label="签约时间:" prop="signupTime">
 				<u-input :value="client.signupTime" type="select" placeholder="请选择签约时间" @click="showCalendar = true" />
 			</u-form-item>
+			<u-form-item label="合同状态:" prop="contractStatusId">
+				<u-input :value="checkedContractStatus.status" type="select" placeholder="请选择合同状态(单选)" @click="onClickContractList" />
+			</u-form-item>
 			<u-form-item label="备注:">
 				<u-input v-model="client.mark" type="textarea" :auto-height="true" height="44" placeholder="请输入备注(选填)" />
 			</u-form-item>
@@ -89,6 +92,18 @@
 				<u-button @click="onClickInvoiceDone" type="primary">完成</u-button>
 			</view>
 		</u-popup>
+		<u-popup v-model="showContractPop" mode="center" border-radius="10" width="95%" :closeable="true">
+			<view class="show-pop">
+				<view class="show-pop-title">
+					请选择合同状态(单选)
+				</view>
+				<u-radio-group :wrap="true" v-model="client.contractStatusId">
+					<u-radio v-for="(contract, index) in showContractStatusList" :key="index" :name="contract._id" @change="onChangeContractStatus">
+						{{contract.status}}
+					</u-radio>
+				</u-radio-group>
+			</view>
+		</u-popup>
 	</view>
 </template>
 
@@ -119,6 +134,7 @@
 						postAddress: '',
 					},
 					signupTime: '',
+					contractStatusId: '',
 					mark: '',
 					openid: '',
 					createAt: null,
@@ -177,17 +193,31 @@
 				showContactPop: false,
 				clientContactNames: '',
 				showInvoiceInfoPop: false,
-				clientInvoiceInfo: ''
+				clientInvoiceInfo: '',
+				showContractPop: false,
+				showContractStatusList: [],
+				checkedContractStatus: null
 			}
 		},
 		onLoad(option) {
 			if (option.client) {
 				this.client = JSON.parse(option.client)
 				this.isEdit = true
-				this.clientCompanyNames = this.companyList.filter(company => this.client.companyIds.includes(company._id)).map(company => company.companyName).toString()
+				this.clientCompanyNames = this.companyList.filter(company => this.client.companyIds.includes(company._id)).map(
+					company => company.companyName).toString()
 				this.clientContactNames =
 					`${this.client.contactInformation.name} ${this.client.contactInformation.phone} ${this.client.contactInformation.address}`
 				this.clientInvoiceInfo = `${this.client.invoiceInfo.companyName} ${this.client.invoiceInfo.taxNumber}`
+			}
+			if (this.contractStatusList.length > 0) {
+				this.showContractStatusList = this.contractStatusList.map(contractStatus => {
+					return {
+						_id: contractStatus._id,
+						status: contractStatus.status,
+						checked: false
+					}
+				})
+				this.checkedContractStatus = this.contractStatusList.find(contractStatus => contractStatus._id === this.client.contractStatusId)
 			}
 		},
 		onShow() {
@@ -211,7 +241,7 @@
 			}
 		},
 		computed: {
-			...mapGetters(['currentUser', 'clientList', 'companyList'])
+			...mapGetters(['currentUser', 'clientList', 'companyList', 'contractStatusList'])
 		},
 		methods: {
 			...mapMutations(['ADDCLIENT', 'UPDATECLIENT']),
@@ -244,6 +274,14 @@
 				this.showInvoiceInfoPop = false
 				const invoiceInfo = this.client.invoiceInfo
 				this.clientInvoiceInfo = `${invoiceInfo.companyName} ${invoiceInfo.taxNumber}`
+			},
+			onClickContractList() {
+				this.showContractPop = true
+			},
+			onChangeContractStatus(id) {
+				this.client.contractStatusId = id
+				this.checkedContractStatus = this.contractStatusList.find(contractStatus => contractStatus._id === id)
+				this.showContractPop = false
 			},
 			onClickSubmit() {
 				const self = this

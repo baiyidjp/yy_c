@@ -9,6 +9,7 @@
 		<text class="sub-title">税源地: {{ checkedCompany.companyName }}</text>
 		<text class="sub-title">众包费: {{ issue.totalAmount }}</text>
 		<text class="sub-title" :class="issueFinish ? 'issue-item-finish' : 'issue-item-unfinish'">工单状态: {{issueFinish ? '已完成' : '未完成' }}</text>
+		<text class="sub-title">发票状态: {{ issueInvoiceStatus }}</text>
 		<text class="sub-title">备注: {{ issue.mark.length > 0 ? issue.mark : '无' }}</text>
 	</view>
 </template>
@@ -26,7 +27,7 @@
 			index: null
 		},
 		computed: {
-			...mapGetters(['currentUser', 'issueList', 'clientList', 'companyList']),
+			...mapGetters(['currentUser', 'issueList', 'clientList', 'companyList', 'invoiceStatusList']),
 			issueFinish() {
 				if (this.issue) {
 					let isFinish = true
@@ -48,6 +49,16 @@
 				if (this.issue) {
 					return	this.companyList.find(company => company._id === this.issue.companyId)
 				}
+			},
+			issueInvoiceStatus() {
+				if (this.issue) {
+					const invoiceStatusInfo = this.invoiceStatusList.find(invoiceStatus => invoiceStatus._id === this.issue.invoiceStatusId)
+					if (invoiceStatusInfo) {
+						return invoiceStatusInfo.status
+					}
+					return '无/被删除'
+				}
+				return ''
 			}
 		},
 		methods: {

@@ -21,12 +21,18 @@ exports.main = async (event, context) => {
 	
 	let rebateInfoList = await db.collection('rebate_date').get()
 	
+	let contractStatusList = await db.collection('contract_status').get()
+	
+	let invoiceStatusList = await db.collection('invoice_status').get()
+	
 	//返回数据给客户端
 	return {
 		companyList,
 		clientList,
 		channelList,
 		issueList,
-		rebateInfoList
+		rebateInfoList,
+		contractStatusList,
+		invoiceStatusList
 	}
 };

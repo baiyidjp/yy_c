@@ -181,6 +181,9 @@
 			if (option.issue) {
 				this.issue = JSON.parse(option.issue)
 				this.isEdit = true
+				this.checkedClient = this.clientList.find(client => client._id === this.issue.clientId)
+				this.checkedClientCompanyList = this.companyList.filter(company => this.checkedClient.companyIds.includes(company._id))
+				this.checkedCompany = this.companyList.find(company => company._id === this.issue.companyId)
 			}
 			if (this.invoiceStatusList.length > 0) {
 				this.showInvoiceStatusList = this.invoiceStatusList.map(invoiceStatus => {
@@ -210,7 +213,7 @@
 			this.$refs.issueForm.setRules(this.rules);
 			if (this.isEdit) {
 				uni.setNavigationBarTitle({
-					title: '编辑工单'
+					title: '编辑业务单'
 				})
 			}
 		},
